@@ -5,6 +5,8 @@ pub enum Axis {
     Y,
     Z,
 }
+
+#[derive(Clone, Copy, Debug)]
 pub struct Vec3 {
     pub xyz: [f32; 3],
 }
@@ -98,6 +100,22 @@ impl SubAssign for Vec3 {
         self[X] -= rhs[X];
         self[Y] -= rhs[Y];
         self[Z] -= rhs[Z];
+    }
+}
+impl MulAssign for Vec3 {
+    fn mul_assign(&mut self, rhs: Self) {
+        use Axis::*;
+        self[X] *= rhs[X];
+        self[Y] *= rhs[Y];
+        self[Z] *= rhs[Z];
+    }
+}
+impl MulAssign<f32> for Vec3 {
+    fn mul_assign(&mut self, rhs: f32) {
+        use Axis::*;
+        self[X] *= rhs;
+        self[Y] *= rhs;
+        self[Z] *= rhs;
     }
 }
 
