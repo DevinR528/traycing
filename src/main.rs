@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use image::{DynamicImage, GenericImage, ImageBuffer, ImageFormat, Pixel, Rgba};
 
 use std::fs::OpenOptions;
@@ -59,7 +61,7 @@ fn rainbow_gradient(file: &str) {
 
     for y in 0..HY {
         for x in 0..WX {
-            let mut vec = Vec3::new(x as f32 / WX as f32, y as f32 / HY as f32, 0.2);
+            let vec = Vec3::new(x as f32 / WX as f32, y as f32 / HY as f32, 0.2);
 
             image.put_pixel(
                 x,
