@@ -1,10 +1,12 @@
 use std::ops::{Add, AddAssign, Deref, Div, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
-pub enum Axis {
+enum Axis {
     X,
     Y,
     Z,
 }
+
+use Axis::*;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Vec3 {
@@ -39,12 +41,38 @@ impl Vec3 {
     pub fn b(&self) -> f32 {
         self[Axis::Z]
     }
+
+    pub fn len_sqrd(&self) -> f32 {
+        self.x() * self.x() + self.y() * self.y() + self.z() * self.z()
+    }
+
+    pub fn len(&self) -> f32 {
+        self.len_sqrd().sqrt()
+    }
+
+    pub fn normalize(&self) -> Vec3 {
+        let inv_len = self.len().recip();
+        (*self) * inv_len
+    }
+
+    pub fn dot(&self, rhs: Self) -> f32 {
+        self.x() * rhs.x() + self.y() * rhs.y() + self.z() * rhs.z()
+    }
+
+    pub fn cross(&self, rhs: Self) -> Self {
+        Self {
+            xyz: [
+                self.y() * rhs.z() - self.z() * rhs.y(),
+                self.z() * rhs.x() - self.x() * rhs.z(),
+                self.x() * rhs.y() - self.y() * rhs.x(),
+            ],
+        }
+    }
 }
 
 impl Add for Vec3 {
     type Output = Self;
     fn add(self, rhs: Self) -> Self::Output {
-        use Axis::*;
         Self {
             xyz: [self[X] + rhs[X], self[Y] + rhs[Y], self[Z] + rhs[Z]],
         }
@@ -53,34 +81,55 @@ impl Add for Vec3 {
 impl Sub for Vec3 {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self::Output {
-        use Axis::*;
         Self {
             xyz: [self[X] - rhs[X], self[Y] - rhs[Y], self[Z] - rhs[Z]],
-        }
-    }
-}
-impl Mul for Vec3 {
-    type Output = Self;
-    fn mul(self, rhs: Self) -> Self::Output {
-        use Axis::*;
-        Self {
-            xyz: [self[X] * rhs[X], self[Y] * rhs[Y], self[Z] * rhs[Z]],
         }
     }
 }
 impl Div for Vec3 {
     type Output = Self;
     fn div(self, rhs: Self) -> Self::Output {
-        use Axis::*;
         Self {
             xyz: [self[X] / rhs[X], self[Y] / rhs[Y], self[Z] / rhs[Z]],
+        }
+    }
+}
+impl Div<f32> for Vec3 {
+    type Output = Self;
+    fn div(self, rhs: f32) -> Self::Output {
+        Self {
+            xyz: [self[X] / rhs, self[Y] / rhs, self[Z] / rhs],
+        }
+    }
+}
+impl Mul for Vec3 {
+    type Output = Self;
+    fn mul(self, rhs: Self) -> Self::Output {
+        Self {
+            xyz: [self[X] * rhs[X], self[Y] * rhs[Y], self[Z] * rhs[Z]],
+        }
+    }
+}
+
+impl Mul<f32> for Vec3 {
+    type Output = Self;
+    fn mul(self, rhs: f32) -> Self::Output {
+        Self {
+            xyz: [self[X] * rhs, self[Y] * rhs, self[Z] * rhs],
+        }
+    }
+}
+impl Mul<Vec3> for f32 {
+    type Output = Vec3;
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3 {
+            xyz: [rhs[X] * self, rhs[Y] * self, rhs[Z] * self],
         }
     }
 }
 impl Neg for Vec3 {
     type Output = Self;
     fn neg(self) -> Self::Output {
-        use Axis::*;
         Self {
             xyz: [-self[X], -self[Y], -self[Z]],
         }
@@ -88,7 +137,6 @@ impl Neg for Vec3 {
 }
 impl AddAssign for Vec3 {
     fn add_assign(&mut self, rhs: Self) {
-        use Axis::*;
         self[X] += rhs[X];
         self[Y] += rhs[Y];
         self[Z] += rhs[Z];
@@ -96,7 +144,6 @@ impl AddAssign for Vec3 {
 }
 impl SubAssign for Vec3 {
     fn sub_assign(&mut self, rhs: Self) {
-        use Axis::*;
         self[X] -= rhs[X];
         self[Y] -= rhs[Y];
         self[Z] -= rhs[Z];
@@ -104,7 +151,6 @@ impl SubAssign for Vec3 {
 }
 impl MulAssign for Vec3 {
     fn mul_assign(&mut self, rhs: Self) {
-        use Axis::*;
         self[X] *= rhs[X];
         self[Y] *= rhs[Y];
         self[Z] *= rhs[Z];
@@ -112,7 +158,6 @@ impl MulAssign for Vec3 {
 }
 impl MulAssign<f32> for Vec3 {
     fn mul_assign(&mut self, rhs: f32) {
-        use Axis::*;
         self[X] *= rhs;
         self[Y] *= rhs;
         self[Z] *= rhs;
