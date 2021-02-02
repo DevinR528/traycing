@@ -1,4 +1,6 @@
-use std::ops::{Add, AddAssign, Deref, Div, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
+use std::ops::{
+    Add, AddAssign, Deref, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign,
+};
 
 enum Axis {
     X,
@@ -8,7 +10,7 @@ enum Axis {
 
 use Axis::*;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct Vec3 {
     pub xyz: [f32; 3],
 }
@@ -163,7 +165,13 @@ impl MulAssign<f32> for Vec3 {
         self[Z] *= rhs;
     }
 }
-
+impl DivAssign<f32> for Vec3 {
+    fn div_assign(&mut self, rhs: f32) {
+        self[X] /= rhs;
+        self[Y] /= rhs;
+        self[Z] /= rhs;
+    }
+}
 impl Index<Axis> for Vec3 {
     type Output = f32;
     fn index(&self, index: Axis) -> &Self::Output {
