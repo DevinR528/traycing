@@ -10,7 +10,7 @@ enum Axis {
 
 use Axis::*;
 
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Vec3 {
     pub xyz: [f32; 3],
 }

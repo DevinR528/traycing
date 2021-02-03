@@ -1,5 +1,3 @@
-use rand::random;
-
 use crate::{Ray, Vec3};
 
 pub struct Camera {

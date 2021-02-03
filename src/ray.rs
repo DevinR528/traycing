@@ -1,5 +1,6 @@
 use crate::vec::Vec3;
 
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Ray {
     a: Vec3,
     b: Vec3,
@@ -18,12 +19,12 @@ impl Ray {
         self.b
     }
 
-    pub fn point_at_parameter(&self, t: f32) -> Vec3 {
+    pub fn point_at_parameter(self, t: f32) -> Vec3 {
         self.a + t * self.b
     }
 }
 
-fn hit_sphere(center: Vec3, radius: f32, ray: &Ray) -> f32 {
+fn hit_sphere(center: Vec3, radius: f32, ray: Ray) -> f32 {
     let oc = ray.origin() - center;
     let a = ray.direction().dot(ray.direction());
     let b = 2.0 * oc.dot(ray.direction());
@@ -36,7 +37,7 @@ fn hit_sphere(center: Vec3, radius: f32, ray: &Ray) -> f32 {
     }
 }
 
-pub fn color(ray: &Ray) -> Vec3 {
+pub fn color(ray: Ray) -> Vec3 {
     let t = hit_sphere(Vec3::new(0.0, 0.0, -1.0), 0.5, ray);
 
     if t > 0.0 {
